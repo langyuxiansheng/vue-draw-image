@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+    }
+
+    #draw-canvas {
+        display: block;
+        margin: 50px auto;
+    }
+</style>
+
+<body>
+    <canvas id="draw-canvas" width="600" height="400" style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML5 canvas tag.
+    </canvas>
+    <!-- <button id="up">增大</button><button id="down">减小</button><button id="cancel">撤销</button><button
+        id="clear">清空</button> -->
+</body>
+<script>
+
+    class DrawRectangle{
+        constructor(id, options){
+            this.canvas = document.getElementById(id); //canvas标签
+            this.ctx = this.canvas.getContext('2d');
+            this.currentR = null;  //单前点击的矩形框
+            this.startX =0;  //开始X坐标
+            this.startY = 0;   //开始Y坐标
+            this.endX = 0;    // 结束X坐标
+            this.endY = 0;   // 结束Y坐标
+            this.layers = options && options.layers || [];   //图层
+            this.optype = 0; //op操作类型 0 无操作 1 画矩形框 2 拖动矩形框
+            this.scale = 1;   //放大倍数
+            this.scaleStep = 1.05;   //
+            this.flag = false;  //是否点击鼠标的标志
+            this.type =  0;     //鼠标移动类型
+            this.topDistance =  0;     //
+            this.leftDistance =  0;     //
+            this.config = {
+                width: 600,
+                height: 400,
+                dashedColor: '#fff',    //虚线颜色
+                solidColor: '#fff',    //实线颜色
+                src: null,  //图片的路径
+            }
+            if (options) {
+                for (const key in options) {
+                    this.config[key] = options[key]
+                }
+            }
+            this.setImageBackground(this.config.src);
+            this.canvas.onmouseleave =  () => {
+                this.canvas.onmousedown = null;
+                this.canvas.onmousemove = null;
+                this.canvas.onmouseup = null;
+            }
+            this.canvas.onmouseenter = ()=> {
+                this.canvas.onmousedown = this.mousedown.bind(this);
+                this.canvas.onmousemove = this.mousemove.bind(this);
+                document.onmouseup = this.mouseup.bind(this);
+            }
+        }
+
+        init(){
+            this.layers.forEach(item => {
+                this.ctx.beginPath();
+                this.ctx.strokeRect(item.x1, item.y1, item.width, item.height);
+                // this.ctx.rect(item.x1, item.y1, item.width, item.height);
+                this.ctx.strokeStyle = item.strokeStyle;
+                // if (this.ctx.isPointInPath(x * this.scale, y * this.scale)) {
+                //     this.render(item);
+                //     allNotIn = 0;
+                // }
+                console.log(`item`,item)
+                this.ctx.stroke();
+            })
+            console.log(`init:`,this.layers);
+        }
+
+        //设置图片为canvas的背景
+        setImageBackground(src){
+            const img = new Image();
+            img.style.maxWidth = '800px';
+            img.src = src;
+            const _this = this;
+            img.onload = ()=> {
+                _this.canvas.width = img.width;
+                _this.canvas.height = img.height;
+                _this.config.width = img.width;
+                _this.config.height = img.height;
+                _this.canvas.style.backgroundImage = "url(" + img.src + ")";
+                _this.canvas.style.backgroundSize = `${img.width}px ${img.height}px`;
+                _this.init();
+            }
+        }
+
+        //左侧拉伸展
+        resizeLeft (rect) {
+            this.canvas.style.cursor = "w-resize";
+            if (this.flag && this.optype == 0) { this.optype = 3; }
+            if (this.flag && this.optype == 3) {
+                if (!this.currentR) { this.currentR = rect }
+                this.currentR.x1 = this.endX;
+                this.currentR.width = this.currentR.x2 - this.currentR.x1
+            }
+        }
+
+        //上边框拉伸
+        resizeTop(rect) {
+            this.canvas.style.cursor = "s-resize";
+            if (this.flag && this.optype == 0) { this.optype = 4; }
+            if (this.flag && this.optype == 4) {
+                if (!this.currentR) { this.currentR = rect }
+                this.currentR.y1 = this.endY;
+                this.currentR.height = this.currentR.y2 - this.currentR.y1;
+            }
+        }
+
+        resizeWidth(rect) {
+            this.canvas.style.cursor = "w-resize";
+            if (this.flag && this.optype == 0) { this.optype = 5; }
+            if (this.flag && this.optype == 5) {
+                if (!this.currentR) { this.currentR = rect }
+                this.currentR.x2 = this.endX;
+                this.currentR.width = this.currentR.x2 - this.currentR.x1
+            }
+        }
+
+        resizeHeight(rect) {
+            this.canvas.style.cursor = "s-resize";
+            if (this.flag && this.optype == 0) { this.optype = 6; }
+            if (this.flag && this.optype == 6) {
+                if (!this.currentR) { this.currentR = rect }
+                this.currentR.y2 = this.endY;
+                this.currentR.height = this.currentR.y2 - this.currentR.y1;
+            }
+        }
+
+        resizeLT(rect) {
+            this.canvas.style.cursor = "se-resize";
+            if (this.flag && this.optype == 0) { this.optype = 7; }
+            if (this.flag && this.optype == 7) {
+                if (!this.currentR) { this.currentR = rect }
+                this.currentR.x1 = this.endX;
+                this.currentR.y1 = this.endY;
+                this.currentR.height = this.currentR.y2 - this.currentR.y1;
+                this.currentR.width = this.currentR.x2 - this.currentR.x1;
+            }
+        }
+
+        resizeWH(rect) {
+            this.canvas.style.cursor = "se-resize";
+            if (this.flag && this.optype == 0) { this.optype = 8; }
+            if (this.flag && this.optype == 8) {
+                if (!this.currentR) { this.currentR = rect }
+                this.currentR.x2 = this.endX;
+                this.currentR.y2 = this.endY;
+                this.currentR.height = this.currentR.y2 - this.currentR.y1;
+                this.currentR.width = this.currentR.x2 - this.currentR.x1;
+            }
+        }
+
+        resizeLH(rect) {
+            this.canvas.style.cursor = "ne-resize";
+            if (this.flag && this.optype == 0) { this.optype = 9; }
+            if (this.flag && this.optype == 9) {
+                if (!this.currentR) { this.currentR = rect }
+                this.currentR.x1 = this.endX;
+                this.currentR.y2 = this.endY;
+                this.currentR.height = this.currentR.y2 - this.currentR.y1;
+                this.currentR.width = this.currentR.x2 - this.currentR.x1;
+            }
+        }
+
+        resizeWT(rect) {
+            this.canvas.style.cursor = "ne-resize";
+            if (this.flag && this.optype == 0) { this.optype = 10; }
+            if (this.flag && this.optype == 10) {
+                if (!this.currentR) { this.currentR = rect }
+                this.currentR.x2 = this.endX;
+                this.currentR.y1 = this.endY;
+                this.currentR.height = this.currentR.y2 - this.currentR.y1
+                this.currentR.width = this.currentR.x2 - this.currentR.x1
+            }
+        }
+
+        reshow(x, y) {
+            let allNotIn = 1;
+            this.layers.forEach(item => {
+                this.ctx.beginPath();
+                this.ctx.rect(item.x1, item.y1, item.width, item.height);
+                this.ctx.strokeStyle = item.strokeStyle
+                if (x >= (item.x1 - 25 / this.scale) && x <= (item.x1 + 25 / this.scale) && y <= (item.y2 - 25 / this.scale) && y >= (item.y1 + 25 / this.scale)) {
+                    this.resizeLeft(item);
+                } else if (x >= (item.x2 - 25 / this.scale) && x <= (item.x2 + 25 / this.scale) && y <= (item.y2 - 25 / this.scale) && y >= (item.y1 + 25 / this.scale)) {
+                    this.resizeWidth(item);
+                } else if (y >= (item.y1 - 25 / this.scale) && y <= (item.y1 + 25 / this.scale) && x <= (item.x2 - 25 / this.scale) && x >= (item.x1 + 25 / this.scale)) {
+                    this.resizeTop(item);
+                } else if (y >= (item.y2 - 25 / this.scale) && y <= (item.y2 + 25 / this.scale) && x <= (item.x2 - 25 / this.scale) && x >= (item.x1 + 25 / this.scale)) {
+                    this.resizeHeight(item);
+                } else if (x >= (item.x1 - 25 / this.scale) && x <= (item.x1 + 25 / this.scale) && y <= (item.y1 + 25 / this.scale) && y >= (item.y1 - 25 / this.scale)) {
+                    this.resizeLT(item);
+                } else if (x >= (item.x2 - 25 / this.scale) && x <= (item.x2 + 25 / this.scale) && y <= (item.y2 + 25 / this.scale) && y >= (item.y2 - 25 / this.scale)) {
+                    this.resizeWH(item);
+                } else if (x >= (item.x1 - 25 / this.scale) && x <= (item.x1 + 25 / this.scale) && y <= (item.y2 + 25 / this.scale) && y >= (item.y2 - 25 / this.scale)) {
+                    this.resizeLH(item);
+                } else if (x >= (item.x2 - 25 / this.scale) && x <= (item.x2 + 25 / this.scale) && y <= (item.y1 + 25 / this.scale) && y >= (item.y1 - 25 / this.scale)) {
+                    this.resizeWT(item);
+                }
+                if (this.ctx.isPointInPath(x * this.scale, y * this.scale)) {
+                    this.render(item);
+                    allNotIn = 0;
+                }
+                this.ctx.stroke();
+            })
+            if (this.flag && allNotIn && this.optype < 3) {
+                this.optype = 1;
+            }
+        }
+
+        render(rect) {
+            this.canvas.style.cursor = "move";
+            if (this.flag && this.optype == 0) { this.optype = 2; }
+            if (this.flag && this.optype == 2) {
+                if (!this.currentR) { this.currentR = rect }
+                this.currentR.x2 += this.endX - this.leftDistance - this.currentR.x1;
+                this.currentR.x1 += this.endX - this.leftDistance - this.currentR.x1;
+                this.currentR.y2 += this.endY -this.topDistance - this.currentR.y1;
+                this.currentR.y1 += this.endY - this.topDistance - this.currentR.y1;
+            }
+        }
+
+        isPointInRetc(x, y) {
+            let len = this.layers.length;
+            for (let i = 0; i < len; i++) {
+                if (this.layers[i].x1 < x && x < this.layers[i].x2 && this.layers[i].y1 < y && y < this.layers[i].y2) {
+                    return this.layers[i];
+                }
+            }
+        }
+
+        fixPosition(position) {
+            if (position.x1 > position.x2) {
+                let x = position.x1;
+                position.x1 = position.x2;
+                position.x2 = x;
+            }
+            if (position.y1 > position.y2) {
+                let y = position.y1;
+                position.y1 = position.y2;
+                position.y2 = y;
+            }
+            position.width = position.x2 - position.x1
+            position.height = position.y2 - position.y1
+            if (position.width < 50 || position.height < 50) {
+                position.width = 60;
+                position.height = 60;
+                position.x2 += position.x1 + 60;
+                position.y2 += position.y1 + 60;
+            }
+            return position
+        }
+
+        mousedown(e){
+            this.startX = (e.pageX - this.canvas.offsetLeft + this.canvas.parentElement.scrollLeft) / this.scale;
+            this.startY = (e.pageY - this.canvas.offsetTop + this.canvas.parentElement.scrollTop) / this.scale;
+            this.currentR = this.isPointInRetc(this.startX, this.startY);
+            if (this.currentR) {
+                this.leftDistance = this.startX - this.currentR.x1;
+                this.topDistance = this.startY - this.currentR.y1;
+            }
+            this.ctx.strokeRect(this.endX, this.endY, 0, 0);
+            this.ctx.strokeStyle = this.config.dashedColor;
+            this.flag = 1;
+        }
+
+        mousemove(e){
+            this.endX = (e.pageX - this.canvas.offsetLeft + this.canvas.parentElement.scrollLeft) / this.scale;
+            this.endY = (e.pageY - this.canvas.offsetTop + this.canvas.parentElement.scrollTop) / this.scale;
+            // console.log(`mousemove`, this.endX, this.endY);
+            this.ctx.save();
+            this.ctx.setLineDash([5])
+            this.canvas.style.cursor = "default";
+            this.ctx.clearRect(0, 0, this.config.width, this.config.height);
+            if (this.flag && this.optype == 1) {
+                // ctx.strokeRect(startx, starty, x - startx, y - starty);
+                // ctx.strokeRect(startx, starty, x - startx, y - starty);
+                this.ctx.strokeRect(this.startX, this.startY, this.endX - this.startX, this.endY - this.startY);
+            }
+            this.ctx.restore();
+            this.reshow(this.endX, this.endY);
+        }
+
+        mouseup(e){
+            if (this.optype == 1) {
+                this.layers.push(this.fixPosition({
+                    x1: this.startX,
+                    y1: this.startY,
+                    x2: this.endX,
+                    y2: this.endY,
+                    strokeStyle: this.config.solidColor,
+                    type: this.type
+                }))
+            } else if (this.optype >= 3) {
+                this.fixPosition(this.currentR);
+            }
+            this.currentR = null;
+            this.flag = 0;
+            this.reshow(this.endX, this.endY);
+            this.optype = 0;
+        }
+    }
+
+    const draw = new DrawRectangle('draw-canvas', {
+        src: 'https://cdn.pixabay.com/photo/2020/05/25/07/50/flowers-5217356_1280.jpg',
+        layers:[{"x1":68,"y1":150,"x2":141,"y2":230,"strokeStyle":"#fff","type":0,"width":73,"height":80},{"x1":379,"y1":232,"x2":559,"y2":296,"strokeStyle":"#fff","type":0,"width":180,"height":64},{"x1":798,"y1":243,"x2":1849,"y2":592,"strokeStyle":"#fff","type":0,"width":60,"height":60},{"x1":1027,"y1":212,"x2":1143,"y2":328,"strokeStyle":"#fff","type":0,"width":116,"height":116}]
+    });
+</script>
+
+</html>
