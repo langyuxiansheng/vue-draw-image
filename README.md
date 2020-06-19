@@ -2,14 +2,14 @@
 ##  项目正在开发中....
 
 > 假如此轮子对你有帮助,请顺手star一下吧.o(*￣︶￣*)o
-
+<!-- 
 ## 1.安装使用! 下载安装npm包
 ```bash
 npm i vue-aliplayer-v2 --save
 or
 yarn add vue-aliplayer-v2 
 ```
-<!-- 
+
 #### 全局注册 main.js
 
 ```javascript
