@@ -52,7 +52,7 @@ export default {
             },
             canvas: null,
             ctx: null,
-            currentRect: null, //单前点击的矩形框
+            currentR: null, //单前点击的矩形框
             flag: 0, //是否点击鼠标的标志
             isDraw: true, //是否可以绘制的标志
             topDistance: 0, //顶部边距
@@ -165,9 +165,9 @@ export default {
             this.canvas.style.cursor = 'w-resize';
             if (this.flag && this.optype == 0) { this.optype = 3; }
             if (this.flag && this.optype == 3) {
-                if (!this.currentRect) { this.currentRect = rect; }
-                this.currentRect.x1 = this.endX;
-                this.currentRect.width = this.currentRect.x2 - this.currentRect.x1;
+                if (!this.currentR) { this.currentR = rect; }
+                this.currentR.x1 = this.endX;
+                this.currentR.width = this.currentR.x2 - this.currentR.x1;
             }
         },
 
@@ -178,9 +178,9 @@ export default {
             this.canvas.style.cursor = 's-resize';
             if (this.flag && this.optype == 0) { this.optype = 4; }
             if (this.flag && this.optype == 4) {
-                if (!this.currentRect) { this.currentRect = rect; }
-                this.currentRect.y1 = this.endY;
-                this.currentRect.height = this.currentRect.y2 - this.currentRect.y1;
+                if (!this.currentR) { this.currentR = rect; }
+                this.currentR.y1 = this.endY;
+                this.currentR.height = this.currentR.y2 - this.currentR.y1;
             }
         },
 
@@ -191,9 +191,9 @@ export default {
             this.canvas.style.cursor = 'w-resize';
             if (this.flag && this.optype == 0) { this.optype = 5; }
             if (this.flag && this.optype == 5) {
-                if (!this.currentRect) { this.currentRect = rect; }
-                this.currentRect.x2 = this.endX;
-                this.currentRect.width = this.currentRect.x2 - this.currentRect.x1;
+                if (!this.currentR) { this.currentR = rect; }
+                this.currentR.x2 = this.endX;
+                this.currentR.width = this.currentR.x2 - this.currentR.x1;
             }
         },
 
@@ -204,9 +204,9 @@ export default {
             this.canvas.style.cursor = 's-resize';
             if (this.flag && this.optype == 0) { this.optype = 6; }
             if (this.flag && this.optype == 6) {
-                if (!this.currentRect) { this.currentRect = rect; }
-                this.currentRect.y2 = this.endY;
-                this.currentRect.height = this.currentRect.y2 - this.currentRect.y1;
+                if (!this.currentR) { this.currentR = rect; }
+                this.currentR.y2 = this.endY;
+                this.currentR.height = this.currentR.y2 - this.currentR.y1;
             }
         },
 
@@ -217,11 +217,11 @@ export default {
             this.canvas.style.cursor = 'se-resize';
             if (this.flag && this.optype == 0) { this.optype = 7; }
             if (this.flag && this.optype == 7) {
-                if (!this.currentRect) { this.currentRect = rect; }
-                this.currentRect.x1 = this.endX;
-                this.currentRect.y1 = this.endY;
-                this.currentRect.height = this.currentRect.y2 - this.currentRect.y1;
-                this.currentRect.width = this.currentRect.x2 - this.currentRect.x1;
+                if (!this.currentR) { this.currentR = rect; }
+                this.currentR.x1 = this.endX;
+                this.currentR.y1 = this.endY;
+                this.currentR.height = this.currentR.y2 - this.currentR.y1;
+                this.currentR.width = this.currentR.x2 - this.currentR.x1;
             }
         },
 
@@ -232,11 +232,11 @@ export default {
             this.canvas.style.cursor = 'se-resize';
             if (this.flag && this.optype == 0) { this.optype = 8; }
             if (this.flag && this.optype == 8) {
-                if (!this.currentRect) { this.currentRect = rect; }
-                this.currentRect.x2 = this.endX;
-                this.currentRect.y2 = this.endY;
-                this.currentRect.height = this.currentRect.y2 - this.currentRect.y1;
-                this.currentRect.width = this.currentRect.x2 - this.currentRect.x1;
+                if (!this.currentR) { this.currentR = rect; }
+                this.currentR.x2 = this.endX;
+                this.currentR.y2 = this.endY;
+                this.currentR.height = this.currentR.y2 - this.currentR.y1;
+                this.currentR.width = this.currentR.x2 - this.currentR.x1;
             }
         },
 
@@ -247,11 +247,11 @@ export default {
             this.canvas.style.cursor = 'ne-resize';
             if (this.flag && this.optype == 0) { this.optype = 9; }
             if (this.flag && this.optype == 9) {
-                if (!this.currentRect) { this.currentRect = rect; }
-                this.currentRect.x1 = this.endX;
-                this.currentRect.y2 = this.endY;
-                this.currentRect.height = this.currentRect.y2 - this.currentRect.y1;
-                this.currentRect.width = this.currentRect.x2 - this.currentRect.x1;
+                if (!this.currentR) { this.currentR = rect; }
+                this.currentR.x1 = this.endX;
+                this.currentR.y2 = this.endY;
+                this.currentR.height = this.currentR.y2 - this.currentR.y1;
+                this.currentR.width = this.currentR.x2 - this.currentR.x1;
             }
         },
 
@@ -262,11 +262,11 @@ export default {
             this.canvas.style.cursor = 'ne-resize';
             if (this.flag && this.optype == 0) { this.optype = 10; }
             if (this.flag && this.optype == 10) {
-                if (!this.currentRect) { this.currentRect = rect; }
-                this.currentRect.x2 = this.endX;
-                this.currentRect.y1 = this.endY;
-                this.currentRect.height = this.currentRect.y2 - this.currentRect.y1;
-                this.currentRect.width = this.currentRect.x2 - this.currentRect.x1;
+                if (!this.currentR) { this.currentR = rect; }
+                this.currentR.x2 = this.endX;
+                this.currentR.y1 = this.endY;
+                this.currentR.height = this.currentR.y2 - this.currentR.y1;
+                this.currentR.width = this.currentR.x2 - this.currentR.x1;
             }
         },
 
@@ -280,7 +280,6 @@ export default {
                 //     this.ctx.fillStyle = item.fillStyle;
                 // }
                 this.ctx.fillStyle = item.fillStyle;
-                 this.ctx.globalCompositeOperation =item.layer;
                 this.ctx.rect(item.x1, item.y1, item.width, item.height);
                 // this.ctx.fillRect(item.x1, item.y1, item.width, item.height);
                 // if (x >= (item.x1 - this.config.cursorOffset / this.config.scale) && x <= (item.x1 + this.config.cursorOffset / this.config.scale) && y <= (item.y2 - this.config.cursorOffset / this.config.scale) && y >= (item.y1 + this.config.cursorOffset / this.config.scale)) {
@@ -300,24 +299,20 @@ export default {
                 // } else if (x >= (item.x2 - this.config.cursorOffset / this.config.scale) && x <= (item.x2 + this.config.cursorOffset / this.config.scale) && y <= (item.y1 + this.config.cursorOffset / this.config.scale) && y >= (item.y1 - this.config.cursorOffset / this.config.scale)) {
                 //     this.resizeWT(item);
                 // }
-                // item.fillStyle = this.config.dashedColor;
-
+                this.ctx.globalCompositeOperation = 'destination-over';
                 if (this.ctx.isPointInPath(x * this.config.scale, y * this.config.scale)) {
                     this.render(item);
                     allNotIn = 0;
-                    // this.ctx.globalCompositeOperation = "source-over";
+                    this.ctx.globalCompositeOperation = "source-over";
                 }
+
+                if(this.currentR ){
+
+                }
+
+                // this.ctx.fill();
                 this.ctx.fill();
             });
-            // const moveRect = this.isPointInRetc(x, y);
-            // if(this.currentRect){
-            //     this.currentRect.fillStyle = this.config.hoverBorderColor;
-            //     this.ctx.globalCompositeOperation = 'source-over';
-            // }else if(moveRect){
-            //     moveRect.fillStyle = this.config.hoverBorderColor;
-            //         this.ctx.globalCompositeOperation = 'source-over';
-            // }
-
             if (this.flag && allNotIn && this.optype < 3) {
                 this.optype = 1;
             }
@@ -330,40 +325,24 @@ export default {
             this.canvas.style.cursor = 'move';
             if (this.flag && this.optype == 0) { this.optype = 2; }
             if (this.flag && this.optype == 2) {
-                if (!this.currentRect) { this.currentRect = rect; }
-                this.currentRect.x2 += this.endX - this.leftDistance - this.currentRect.x1;
-                this.currentRect.x1 += this.endX - this.leftDistance - this.currentRect.x1;
-                this.currentRect.y2 += this.endY - this.topDistance - this.currentRect.y1;
-                this.currentRect.y1 += this.endY - this.topDistance - this.currentRect.y1;
+                if (!this.currentR) { this.currentR = rect; }
+                this.currentR.x2 += this.endX - this.leftDistance - this.currentR.x1;
+                this.currentR.x1 += this.endX - this.leftDistance - this.currentR.x1;
+                this.currentR.y2 += this.endY - this.topDistance - this.currentR.y1;
+                this.currentR.y1 += this.endY - this.topDistance - this.currentR.y1;
             }
         },
 
         /**
-         * 判断当前鼠标是否在图形内
+         * 判断当前坐标内是否有图形
          */
         isPointInRetc (x, y) {
             let len = this.layers.length;
-            let maps=this.layers.filter((item)=>{
-                if (item.x1 < x && x < item.x2 && item.y1 < y && y < item.y2) {
-                    return item
+            for (let i = 0; i < len; i++) {
+                if (this.layers[i].x1 < x && x < this.layers[i].x2 && this.layers[i].y1 < y && y < this.layers[i].y2) {
+                    return this.layers[i];
                 }
-
-            })
-            if(maps.length>=2){
-                for(let i=0;i<maps.length;i++){
-                    let item=maps[i]
-                    if(item.layer=='source-over'){
-                        return item;
-                    }
-                }
-            }else{
-                return maps&&maps.length&&maps[0]
             }
-            // for (let i = 0; i < maps.length; i++) {
-            //     if (this.layers[i].x1 < x && x < this.layers[i].x2 && this.layers[i].y1 < y && y < this.layers[i].y2) {
-            //         return this.layers[i];
-            //     }
-            // }
         },
 
         /**
@@ -397,20 +376,18 @@ export default {
         mousedown (e) {
             this.startX = (e.pageX - this.canvas.offsetLeft + this.canvas.parentElement.scrollLeft) / this.config.scale;
             this.startY = (e.pageY - this.canvas.offsetTop + this.canvas.parentElement.scrollTop) / this.config.scale;
-            this.currentRect = this.isPointInRetc(this.startX, this.startY);
-            if (this.currentRect) {
+            this.currentR = this.isPointInRetc(this.startX, this.startY);
+            if (this.currentR) {
                 this.resetHoverColor();
-                this.resetLayer();
-                this.currentRect.layer='source-over'
-                this.currentRect.fillStyle = this.config.hoverBorderColor;
-                this.leftDistance = this.startX - this.currentRect.x1;
-                this.topDistance = this.startY - this.currentRect.y1;
+                this.currentR.fillStyle = this.config.hoverBorderColor;
+                this.leftDistance = this.startX - this.currentR.x1;
+                this.topDistance = this.startY - this.currentR.y1;
             }
 
             if(this.isDraw){   //手动绘制
                 //鼠标按下确定矩形的起始坐标
                 this.ctx.fillRect(this.endX, this.endY, 0, 0);
-                // this.ctx.globalCompositeOperation = "destination-over";
+                this.ctx.globalCompositeOperation = "destination-over";
             }
 
             //设置画笔颜色
@@ -425,18 +402,17 @@ export default {
         mousemove (e) {
             this.endX = (e.pageX - this.canvas.offsetLeft + this.canvas.parentElement.scrollLeft) / this.config.scale;
             this.endY = (e.pageY - this.canvas.offsetTop + this.canvas.parentElement.scrollTop) / this.config.scale;
-            // let moveR = this.isPointInRetc(this.endX, this.endY);
-            // if (moveR) {
-            //     this.resetHoverColor();
-            //     this.resetLayer()
-            //    for(let i=0;i<this.layers.length;i++){
-            //        let item=this.layers[i]
-            //        if(moveR==item){
-            //           item.fillStyle=this.config.hoverBorderColor;
-            //           item.layer='source-over'
-            //        }
-            //    }
-            // }
+             let moveR = this.isPointInRetc(this.endX, this.endY);
+            if (moveR) {
+                this.resetHoverColor();
+               for(let i=0;i<this.layers.length;i++){
+                   let item=this.layers[i]
+                   if(moveR==item){
+                      item.fillStyle=this.config.hoverBorderColor;
+                   }
+               }
+
+            }
             this.ctx.save();
             this.ctx.setLineDash(this.config.lineDash);
             this.canvas.style.cursor = 'default';
@@ -447,6 +423,7 @@ export default {
                 this.ctx.globalCompositeOperation = 'destination-over';
             }
             this.ctx.restore(this.endX, this.endY);
+            console.log(this.endX, this.endY);
             this.reshow(this.endX, this.endY);
             // console.log(`鼠标移动`,e);
         },
@@ -462,14 +439,12 @@ export default {
                     x2: this.endX,
                     y2: this.endY,
                     fillStyle: this.config.solidColor,
-                    type: this.type,
-                    rectId: Math.random().toString(36).substr(2).toLocaleUpperCase(),
-                    layer:'destination-over'
+                    type: this.type
                 }));
             } else if (this.optype >= 3) {
-                this.fixPosition(this.currentRect);
+                this.fixPosition(this.currentR);
             }
-            this.currentRect = null;
+            this.currentR = null;
             this.flag = 0;
             this.reshow(this.endX, this.endY);
             this.optype = 0;
@@ -507,11 +482,6 @@ export default {
         resetHoverColor(){
             this.layers.forEach(item => {
                 item.fillStyle = this.config.solidColor;
-            });
-        },
-        resetLayer(){
-             this.layers.forEach(item => {
-                item.layer = 'destination-over';
             });
         }
 
